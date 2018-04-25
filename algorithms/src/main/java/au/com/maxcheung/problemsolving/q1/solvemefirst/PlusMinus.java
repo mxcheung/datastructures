@@ -37,6 +37,7 @@ public class PlusMinus {
         int pos = 0;
         int neg = 0;
         int zero = 0;
+        
         for (int arrItr = 0; arrItr < arr.length; arrItr++) {
             pos = pos + (arr[arrItr] > 0 ? 1 : 0);
             neg = neg + (arr[arrItr] < 0 ? 1 : 0);
