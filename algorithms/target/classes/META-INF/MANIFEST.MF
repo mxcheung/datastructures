@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: future-clearing
+Implementation-Version: 1.0.0-SNAPSHOT
+Built-By: MAX
+Implementation-Vendor-Id: au.com.maxcheung
+Build-Jdk: 1.8.0_144
+Implementation-URL: http://projects.spring.io/spring-boot/algorithms/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
