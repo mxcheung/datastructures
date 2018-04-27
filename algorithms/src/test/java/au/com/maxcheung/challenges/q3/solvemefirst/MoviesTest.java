@@ -2,13 +2,8 @@ package au.com.maxcheung.challenges.q3.solvemefirst;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import au.com.maxcheung.challenges.q3.solvemefirst.Movies;
 
 
 public class MoviesTest {
@@ -18,9 +13,10 @@ public class MoviesTest {
     }
 
     @Test
-    public void shouldSolveMeFirst() throws FileNotFoundException, IOException {
-        assertEquals("adbecf","adbecf");
-        Movies.getNumberOfMovies("fdgf");
+    public void shouldSolveMeFirst() throws Exception {
+        assertEquals(97,Movies.getNumberOfMovies("maze"));
+        assertEquals(13,Movies.getNumberOfMovies("spiderman"));
+        
     }
 
 }  

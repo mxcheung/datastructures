@@ -3,69 +3,85 @@ package au.com.maxcheung.challenges.q3.solvemefirst;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class Movies {
 
     /*
      * Complete the function below.
      */
-    static int getNumberOfMovies(String substr) {
+    static int getNumberOfMovies(String substr) throws Exception {
         /*
          * Endpoint: "https://jsonmock.hackerrank.com/api/movies/search/?Title=substr"
          */
 
-        try {
-            URL url = new URL("https://jsonmock.hackerrank.com/api/movies/search/?Title=maze");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            int responseCode = con.getResponseCode();
-            PageRoot root;
-            if (responseCode == HttpURLConnection.HTTP_OK) { // success
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-                Gson gson = new Gson();
-                String jsonInString = response.toString();
-                root= gson.fromJson(jsonInString, PageRoot.class);
-                root= gson.fromJson(jsonInString, PageRoot.class);
-           //     String response response.toString();
-         //       gson.toJson(obj, new FileWriter("D:\\file.json"));
-           //     System.out.println(response.toString());
-            } else {
-                System.out.println("GET request not worked");
-            }
+        final String url = "https://jsonmock.hackerrank.com/api/movies/search/?Title=" + substr;
+        String response = getResponse(url);
+        JsonParser parser = new JsonParser();
+        JsonElement rootNode = parser.parse(response);
+        JsonObject details = rootNode.getAsJsonObject();
+        JsonElement totalMovies = details.get("total");
+        int total = Integer.valueOf(totalMovies.toString());
+        List<String> movies = getMovieList(substr, details);
+        assert total  == movies.size() ;
+        return total;
+    }
 
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    private static  List<String>  getMovieList(String substr, JsonObject details) throws Exception {
+        List<String> movies = new ArrayList<>();
+        JsonElement totalPages = details.get("total_pages");
+        int currentPage = 0;
+        while (currentPage++ < Integer.parseInt(totalPages.toString())) {
+            nextPage(movies, currentPage, substr);
         }
-
-        return 0;
+        return movies;
     }
-    
-    
+
     public class Movie {
-        
-    }
-    
-    
 
-    public static void main(String[] args) throws IOException {
+    }
+
+    static void nextPage(List<String> movies, int currentPage, String substr) throws Exception {
+        final String url = "https://jsonmock.hackerrank.com/api/movies/search/?Title=";
+        String response = getResponse(url + substr + "&page=" + currentPage);
+        JsonParser parser = new JsonParser();
+        JsonElement rootNode = parser.parse(response);
+
+        JsonObject details = rootNode.getAsJsonObject();
+        JsonElement data = details.get("data");
+        JsonArray jsonArray = data.getAsJsonArray();
+        for (JsonElement each : jsonArray) {
+            JsonObject titleObject = each.getAsJsonObject();
+            String title = titleObject.get("Title").getAsString();
+            movies.add(title);
+        }
+    }
+
+    static String getResponse(String urlToRead) throws Exception {
+        StringBuilder result = new StringBuilder();
+        URL url = new URL(urlToRead);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        return result.toString();
+    }
+
+    public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
         final String fileName = System.getenv("OUTPUT_PATH");
         BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));

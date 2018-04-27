@@ -11,20 +11,13 @@ public class MergeStrings {
         int x = a.length();
         int y = b.length();
         int minSize = x < y ? x : y;
-
         String result = "";
         for (int i = 0; i < minSize; i++) {
-            result = result + a.substring(i, i + 1);
-            result = result + b.substring(i, i + 1);
+            result+= a.charAt(i);
+            result+= b.charAt(i);
         }
-        if (x < y) {
-            result = result + b.substring(x, y);
-
-        } else {
-            result = result + a.substring(y, x);
-        }
+        result += (x < y) ? b.substring( x ,y) : a.substring(y, x);
         return result;
-
     }
 
     public static void main(String[] args) throws IOException {
